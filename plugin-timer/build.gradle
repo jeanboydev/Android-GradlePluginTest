@@ -1,0 +1,49 @@
+apply plugin: 'groovy'//使用 groovy 插件构建项目
+apply plugin: 'maven'//用于发布本地 maven 仓库中
+
+dependencies {
+    compile gradleApi()//gradle sdk
+    compile localGroovy()//groovy sdk
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+def groupName = 'com.jeanboy.plugin.timer'//组名
+def artifactName = 'timer'//项目名
+def versionName = '1.0.1'//版本号
+
+//上传至本地仓库
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.groupId = "${groupName}"
+            pom.artifactId = "${artifactName}"
+            pom.version = "${versionName}"
+            repository(url: uri('../PluginRepository'))
+        }
+    }
+}
+
+//使用 bintray-release 插件
+apply plugin: 'com.novoda.bintray-release'
+
+publish {
+    groupId = "${groupName}"
+    artifactId = "${artifactName}"
+    publishVersion = "${versionName}"
+
+    //项目描述
+    desc = 'Task timer'
+    //项目网址，建议github开源库网址
+    website = 'https://github.com/jeanboy/Android-GradlePluginTest'
+    //bintray 的用户名
+    bintrayUser = 'jeanboydev'
+    //bintray 用户名
+    userOrg = 'jeanboydev'
+    //API Key
+    bintrayKey = "***********"
+    dryRun = false
+}
